@@ -6,6 +6,7 @@ import com.example.pruebaandroid.base.domain.TransactionModel
 import com.example.pruebaandroid.base.ui.SharedViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
 private const val AUD = "AUD"
 private const val CAD = "CAD"
@@ -17,11 +18,12 @@ class DetailViewModel(
     private val sharedViewModel: SharedViewModel
 ) : ViewModel() {
     val detailTitle = MutableLiveData(sku)
-    val total = MutableLiveData(0.0)
+    val total = MutableLiveData("0.0")
     val transactionList = MutableLiveData<List<TransactionModel>>()
     private var audToEurRatio = 0f
     private var usdToAutRatio = 0f
     private var cadToUsdRatio = 0f
+    private val decimalFormat = DecimalFormat("#.##")
 
     init {
         sharedViewModel.transactionsList?.let { list ->
@@ -38,10 +40,11 @@ class DetailViewModel(
         sharedViewModel.ratesList?.find { it.from == CAD && it.to == USD }?.let {
             cadToUsdRatio = it.rate.toFloat()
         }
+        decimalFormat.roundingMode = RoundingMode.HALF_EVEN
     }
 
     private fun getTotalValueInEUR(list: List<TransactionModel>) {
-        total.value = list.map {
+        val totalValue = list.map {
             when (it.currency) {
                 AUD -> {
                     audToEur(it.amount.toFloat())
@@ -53,21 +56,25 @@ class DetailViewModel(
                     usdToEur(it.amount.toFloat())
                 }
                 else -> {
-                    it.amount.toFloat()
+                    it.amount.toDouble()
                 }
             }
-        }.sumOf { BigDecimal(it.toDouble()).setScale(2, RoundingMode.HALF_EVEN) }.toDouble()
+        }.sumByDouble { it }
+        total.value = String.format("%.2f", totalValue)
     }
 
-    private fun usdToEur(amount: Float): Float {
-        return amount * usdToAutRatio * audToEurRatio
+    private fun usdToEur(amount: Float): Double {
+        val convertedValue = amount * usdToAutRatio * audToEurRatio
+        return decimalFormat.format(convertedValue.toDouble()).toDouble()
     }
 
-    private fun cadToEur(amount: Float): Float {
-        return amount * cadToUsdRatio * usdToAutRatio * audToEurRatio
+    private fun cadToEur(amount: Float): Double {
+        val convertedValue = amount * cadToUsdRatio * usdToAutRatio * audToEurRatio
+        return decimalFormat.format(convertedValue.toDouble()).toDouble()
     }
 
-    private fun audToEur(amount: Float): Float {
-        return amount * audToEurRatio
+    private fun audToEur(amount: Float): Double {
+        val convertedValue = amount * audToEurRatio
+        return decimalFormat.format(convertedValue.toDouble()).toDouble()
     }
 }

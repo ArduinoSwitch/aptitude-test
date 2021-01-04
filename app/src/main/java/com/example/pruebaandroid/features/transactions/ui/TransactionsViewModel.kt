@@ -1,8 +1,6 @@
 package com.example.pruebaandroid.features.transactions.ui
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.pruebaandroid.base.domain.RatesModel
 import com.example.pruebaandroid.base.domain.TransactionModel
 import com.example.pruebaandroid.base.result.UseCaseSuspend
@@ -19,13 +17,20 @@ class TransactionsViewModel(
 ) : ViewModel() {
 
     val differentTransactionList = MutableLiveData<List<TransactionModel>>()
+    val isLoading = MutableLiveData<Boolean>()
+    val emptyList: LiveData<Boolean> = differentTransactionList.map {
+        it.isNullOrEmpty()
+    }
 
     init {
+        getData()
+    }
+
+    private fun getData() {
         viewModelScope.launch {
+            isLoading.value = true
             fetchXml()
-            sharedViewModel.transactionsList?.let {
-                setUpDifferentTransactionList(it)
-            }
+            isLoading.value = false
         }
     }
 
@@ -38,12 +43,13 @@ class TransactionsViewModel(
         checkResult(transactionsUseCase.invoke(Unit))?.let {
             it.body()?.let { list ->
                 sharedViewModel.transactionsList = list
+                setUpDifferentTransactionList(list)
             }
         }
     }
 
     private fun setUpDifferentTransactionList(list: List<TransactionModel>) {
-        differentTransactionList.value = list.distinctBy { it.sku }
+        differentTransactionList.postValue(list.distinctBy { it.sku })
     }
 
     private fun <T> checkResult(data: Response<T>): Response<T>? {

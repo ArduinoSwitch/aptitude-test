@@ -8,9 +8,10 @@
         <variable
             name="viewModel"
             type="com.example.pruebaandroid.features.transactions.ui.TransactionsViewModel" />
+        <import type="android.view.View"/>
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -24,5 +25,20 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_transaction" />
 
-    </LinearLayout>
+        <ProgressBar
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginHorizontal="20dp"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.emptyList ? View.VISIBLE : View.GONE}"
+            android:text="La lista esta vacia o los datos no han llegado de forma correcta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
 </layout>

@@ -34,6 +34,7 @@ class TransactionsFragment : Fragment() {
             container,
             false
         )
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
         setRecyclerView(binding.recyclerView)
         return binding.root
