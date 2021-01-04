@@ -8,11 +8,16 @@
         android:name="com.example.pruebaandroid.features.transactions.ui.TransactionsFragment"
         tools:layout="@layout/fragment_transactions"
         android:id="@+id/transaction_fragment">
-        <action android:id="@+id/nav_to_detail"
-            app:destination="@id/detail"/>
+        <action
+            android:id="@+id/nav_to_detail"
+            app:destination="@id/detail" />
     </fragment>
     <fragment
         android:name="com.example.pruebaandroid.features.detail.DetailFragment"
         tools:layout="@layout/fragment_detail"
-        android:id="@+id/detail"/>
+        android:id="@+id/detail">
+        <argument
+            android:name="data"
+            app:argType="string"/>
+    </fragment>
 </navigation>

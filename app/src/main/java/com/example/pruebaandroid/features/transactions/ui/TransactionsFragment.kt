@@ -11,13 +11,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pruebaandroid.R
 import com.example.pruebaandroid.base.domain.TransactionModel
+import com.example.pruebaandroid.base.ui.SharedViewModel
 import com.example.pruebaandroid.databinding.FragmentTransactionsBinding
+import com.example.pruebaandroid.features.detail.DetailFragmentArgs
 import com.example.pruebaandroid.features.transactions.adapter.TransactionAdapter
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class TransactionsFragment : Fragment() {
 
-    private val viewModel: TransactionsViewModel by viewModel()
+    private val sharedViewModel: SharedViewModel by sharedViewModel()
+    private val viewModel: TransactionsViewModel by viewModel { parametersOf(sharedViewModel) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +59,7 @@ class TransactionsFragment : Fragment() {
     private fun getMyTransactionListAdapter() = TransactionAdapter(::setOnClickListener)
 
     private fun setOnClickListener(item: TransactionModel) {
-        findNavController().navigate(R.id.nav_to_detail)
+        val action = TransactionsFragmentDirections.navToDetail(item.sku)
+        findNavController().navigate(action)
     }
 }
