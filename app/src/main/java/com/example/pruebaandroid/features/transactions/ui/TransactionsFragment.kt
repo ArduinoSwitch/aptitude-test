@@ -13,7 +13,6 @@ import com.example.pruebaandroid.R
 import com.example.pruebaandroid.base.domain.TransactionModel
 import com.example.pruebaandroid.base.ui.SharedViewModel
 import com.example.pruebaandroid.databinding.FragmentTransactionsBinding
-import com.example.pruebaandroid.features.detail.DetailFragmentArgs
 import com.example.pruebaandroid.features.transactions.adapter.TransactionAdapter
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -51,7 +50,7 @@ class TransactionsFragment : Fragment() {
     }
 
     private fun subscribeItemUI(adapter: TransactionAdapter) {
-        viewModel.differentTransactionList.observe(this.viewLifecycleOwner, {
+        viewModel.differentTransactionList.observe(viewLifecycleOwner, {
             it.let(adapter::submitList)
         })
     }

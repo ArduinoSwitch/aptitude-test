@@ -13,7 +13,7 @@
             app:destination="@id/detail" />
     </fragment>
     <fragment
-        android:name="com.example.pruebaandroid.features.detail.DetailFragment"
+        android:name="com.example.pruebaandroid.features.detail.ui.DetailFragment"
         tools:layout="@layout/fragment_detail"
         android:id="@+id/detail">
         <argument
